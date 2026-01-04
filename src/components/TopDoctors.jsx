@@ -1,34 +1,84 @@
-import React, { useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { AppContext } from '../context/AppContext'
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+
 const TopDoctors = () => {
+  const navigate = useNavigate();
+  const { doctors } = useContext(AppContext);
 
-    const navigate = useNavigate()
+  return (
+    <div className="flex flex-col items-center gap-6 my-16 text-[#262626] md:mx-10">
+      {/* Header */}
+      <h1 className="text-3xl md:text-4xl font-semibold text-center">
+        Top Doctors You Can Trust
+      </h1>
+      <p className="sm:w-2/3 text-center text-gray-600 text-sm">
+        Explore our curated list of experienced doctors across multiple
+        specialties. Book appointments easily and manage your healthcare with
+        confidence.
+      </p>
 
-    const { doctors } = useContext(AppContext)
+      {/* Doctors Grid */}
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-8">
+        {doctors.slice(0, 10).map((doc) => (
+          <div
+            key={doc._id}
+            onClick={() => {
+              navigate(`/appointment/${doc._id}`);
+              window.scrollTo(0, 0);
+            }}
+            className="border border-[#C9D8FF] rounded-xl overflow-hidden cursor-pointer hover:-translate-y-2 hover:shadow-lg transition-all duration-300 bg-white"
+          >
+            <img
+              className="w-full h-48 object-cover bg-[#EAEFFF]"
+              src={doc.image}
+              alt={doc.name}
+            />
+            <div className="p-4 flex flex-col gap-2">
+              {/* Availability */}
+              <div
+                className={`flex items-center gap-2 text-sm ${
+                  doc.available ? "text-green-500" : "text-gray-500"
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    doc.available ? "bg-green-500" : "bg-gray-500"
+                  }`}
+                />
+                {doc.available ? "Available Now" : "Currently Unavailable"}
+              </div>
 
-    return (
-        <div className='flex flex-col items-center gap-4 my-16 text-[#262626] md:mx-10'>
-            <h1 className='text-3xl font-medium'>Top Doctors to Book</h1>
-            <p className='sm:w-1/3 text-center text-sm'>Simply browse through our extensive list of trusted doctors.</p>
-            <div className='w-full grid grid-cols-auto gap-4 pt-5 gap-y-6 px-3 sm:px-0'>
-                {doctors.slice(0, 10).map((item, index) => (
-                    <div onClick={() => { navigate(`/appointment/${item._id}`); scrollTo(0, 0) }} className='border border-[#C9D8FF] rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500' key={index}>
-                        <img className='bg-[#EAEFFF]' src={item.image} alt="" />
-                        <div className='p-4'>
-                            <div className={`flex items-center gap-2 text-sm text-center ${item.available ? 'text-green-500' : "text-gray-500"}`}>
-                                <p className={`w-2 h-2 rounded-full ${item.available ? 'bg-green-500' : "bg-gray-500"}`}></p><p>{item.available ? 'Available' : "Not Available"}</p>
-                            </div>
-                            <p className='text-[#262626] text-lg font-medium'>{item.name}</p>
-                            <p className='text-[#5C5C5C] text-sm'>{item.speciality}</p>
-                        </div>
-                    </div>
-                ))}
+              {/* Doctor Info */}
+              <p className="text-lg font-medium text-[#262626]">{doc.name}</p>
+              <p className="text-sm text-gray-500">{doc.speciality}</p>
+
+              {/* Optional Extra Info */}
+              <div className="flex justify-between items-center mt-2 text-xs text-gray-400">
+                <span>
+                  {doc.experience
+                    ? `${doc.experience} yrs experience`
+                    : "Experience info"}
+                </span>
+                {/* <span>⭐ {doc.rating || "4.5"}</span> */}
+              </div>
             </div>
-            <button onClick={() => { navigate('/doctors'); scrollTo(0, 0) }} className='bg-[#EAEFFF] text-gray-600 px-12 py-3 rounded-full mt-10'>more</button>
-        </div>
+          </div>
+        ))}
+      </div>
 
-    )
-}
+      {/* More Doctors Button */}
+      <button
+        onClick={() => {
+          navigate("/doctors");
+          window.scrollTo(0, 0);
+        }}
+        className="bg-primary text-white px-8 py-3 rounded-full mt-10 hover:bg-primary-dark transition-colors duration-300"
+      >
+        See All Doctors
+      </button>
+    </div>
+  );
+};
 
-export default TopDoctors
+export default TopDoctors;
